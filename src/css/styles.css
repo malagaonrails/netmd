@@ -1,0 +1,131 @@
+/* Custom print styles and overrides */
+@media print {
+    @page {
+        size: A4;
+        margin: 20mm;
+    }
+
+    body {
+        height: auto;
+        overflow: visible !important;
+        background: white !important;
+    }
+
+    /* Hide the entire standard UI */
+    header,
+    #editor,
+    .bg-gray-50,
+    .border-r,
+    button {
+        display: none !important;
+    }
+
+    /* Target the Preview pane specifically */
+    main {
+        display: block !important;
+        width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
+
+    .w-1\/2 {
+        width: 100% !important;
+        flex: none !important;
+    }
+
+    /* Ensure specific elements are hidden if not caught by above */
+    [class*="print:hidden"] {
+        display: none !important;
+    }
+
+    /* Layout cleanups */
+    #preview {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: none !important;
+        width: 100% !important;
+        overflow: visible !important;
+    }
+
+    /* Typography for print */
+    .prose {
+        font-size: 12pt;
+        line-height: 1.5;
+        color: black !important;
+        max-width: 100% !important;
+    }
+
+    .prose pre {
+        background: #f3f4f6 !important;
+        border: 1px solid #e5e7eb;
+        break-inside: avoid;
+        white-space: pre-wrap;
+        /* Wrap long code lines in print */
+    }
+
+    .prose h1,
+    .prose h2,
+    .prose h3 {
+        break-after: avoid;
+        color: black !important;
+        margin-top: 1.5em;
+    }
+
+    .prose img {
+        break-inside: avoid;
+        max-width: 100% !important;
+    }
+
+    .break-nobreak {
+        break-inside: avoid;
+    }
+}
+
+/* Notion-like scrollbar for screen only */
+@media screen {
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #e5e7eb;
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #d1d5db;
+    }
+}
+
+/* Fix Tailwind Preflight resetting list styles */
+.markdown-body ul {
+    list-style-type: disc;
+    margin-left: 1.5em;
+    margin-bottom: 1em;
+}
+
+.markdown-body ol {
+    list-style-type: decimal;
+    margin-left: 1.5em;
+    margin-bottom: 1em;
+}
+
+.markdown-body li {
+    margin-bottom: 0.25em;
+}
+
+/* Ensure nested lists look correct */
+.markdown-body ul ul,
+.markdown-body ol ul {
+    list-style-type: circle;
+}
+
+.markdown-body ol ol,
+.markdown-body ul ol {
+    list-style-type: lower-alpha;
+}

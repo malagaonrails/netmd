@@ -1,0 +1,127 @@
+/* 
+ * NETMD - ACADEMIC THEME
+ * A formal, serif-based look inspired by LaTeX and academic journals.
+ */
+
+.markdown-body {
+    /* =========================================
+       1. GLOBAL VARIABLES & TYPOGRAPHY
+       ========================================= */
+    font-family: "Times New Roman", Times, Georgia, serif;
+    font-size: 12pt;
+    /* Standard academic size */
+    line-height: 1.6;
+    color: #000000;
+    max-width: 100%;
+    text-align: justify;
+    /* Justify text for paper look */
+}
+
+/* =========================================
+   2. HEADERS
+   ========================================= */
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+    font-family: "Cambria", "Times New Roman", serif;
+    font-weight: bold;
+    color: #000000;
+    margin-top: 2em;
+    margin-bottom: 1em;
+    text-align: left;
+    /* Keep headers left-aligned */
+}
+
+.markdown-body h1 {
+    font-size: 24pt;
+    text-align: center;
+    /* Title usually centered */
+    border-bottom: 2px solid black;
+    padding-bottom: 0.5em;
+}
+
+.markdown-body h2 {
+    font-size: 18pt;
+    border-bottom: 1px solid #666;
+}
+
+.markdown-body h3 {
+    font-size: 14pt;
+    font-style: italic;
+}
+
+/* =========================================
+   3. LISTS
+   ========================================= */
+.markdown-body ul,
+.markdown-body ol {
+    margin-left: 2em;
+    padding-left: 1em;
+    list-style-type: inherit;
+}
+
+/* Ensure standard bullets */
+.markdown-body ul {
+    list-style-type: disc !important;
+}
+
+.markdown-body ol {
+    list-style-type: decimal !important;
+}
+
+/* =========================================
+   4. CODE BLOCKS
+   ========================================= */
+.markdown-body pre {
+    background: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 10px;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 10pt;
+    white-space: pre-wrap;
+    text-align: left;
+}
+
+.markdown-body code {
+    font-family: "Courier New", Courier, monospace;
+    background: #f0f0f0;
+    padding: 2px 4px;
+}
+
+/* =========================================
+   5. TABLES
+   ========================================= */
+.markdown-body table {
+    margin: 1.5em auto;
+    /* Center table */
+    border-collapse: collapse;
+    width: 90%;
+    border-top: 2px solid black;
+    border-bottom: 2px solid black;
+}
+
+.markdown-body th {
+    font-weight: bold;
+    text-align: center;
+    border-bottom: 1px solid black;
+    padding: 6px;
+    font-variant: small-caps;
+}
+
+.markdown-body td {
+    padding: 6px;
+    text-align: center;
+}
+
+/* =========================================
+   6. QUOTES
+   ========================================= */
+.markdown-body blockquote {
+    font-style: italic;
+    margin: 1.5em 2em;
+    padding-left: 1em;
+    border-left: 4px solid #ccc;
+}

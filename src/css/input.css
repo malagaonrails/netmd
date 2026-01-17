@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+    .break-nobreak {
+        break-inside: avoid;
+    }
+}
+
+@media print {
+    @page {
+        size: A4;
+        margin: 20mm;
+    }
+
+    body {
+        height: auto;
+        overflow: visible;
+        background: white;
+    }
+
+    header {
+        display: none !important;
+    }
+
+    /* Hide the editor pane */
+    .print\:hidden {
+        display: none !important;
+    }
+
+    /* Make preview full width */
+    .print\:w-full {
+        width: 100% !important;
+    }
+
+    .print\:p-0 {
+        padding: 0 !important;
+    }
+
+    .print\:overflow-visible {
+        overflow: visible !important;
+    }
+
+    /* Typography adjustments for print */
+    .prose {
+        font-size: 12pt;
+        line-height: 1.5;
+        color: black !important;
+    }
+
+    .prose pre {
+        background: #f3f4f6 !important; /* light gray for code blocks */
+        color: black !important;
+        border: 1px solid #e5e7eb;
+        break-inside: avoid;
+    }
+
+    .prose code {
+        color: black !important;
+        font-weight: 500;
+    }
+
+    .prose h1, .prose h2, .prose h3 {
+        break-after: avoid;
+        color: black !important;
+    }
+    
+    .prose img {
+        break-inside: avoid;
+    }
+}

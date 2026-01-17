@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetMD - Local Markdown to PDF / Print converter</title>
+    <!-- Base Theme Link (Fallback for file:// protocol) -->
+    <link id="base-theme-link" rel="stylesheet" href="">
+    <!-- User Overrides (Editable) -->
+    <style id="theme-override-style"></style>
+    <link rel="stylesheet" href="../lib/tailwind.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="../lib/prism.css">
+    <style>
+        /* Custom scrollbar for Notion-like feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #e5e7eb;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #d1d5db;
+        }
+    </style>
+</head>
+
+<body class="bg-white text-gray-900 h-screen flex flex-col overflow-hidden">
+
+    <!-- Top Bar -->
+    <header
+        class="h-12 border-b border-gray-200 flex items-center justify-between px-4 bg-white flex-shrink-0">
+        <div class="flex items-center space-x-2">
+            <span class="font-semibold text-gray-700">NetMD</span>
+            <span
+                class="px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-xs font-medium border border-green-200 flex items-center gap-1">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                    </path>
+                </svg>
+                100% Private, local Markdown to PDF/Print converter.
+            </span>
+        </div>
+        <div class="flex items-center space-x-3">
+            <!-- Theme Controls -->
+            <div
+                class="flex items-center bg-gray-100 rounded p-0.5 border border-gray-200">
+                <select id="themeSelect"
+                    class="bg-transparent text-sm text-gray-700 focus:outline-none px-2 py-1 cursor-pointer border-r border-gray-200">
+                    <option value="github">GitHub Theme</option>
+                    <option value="notion">Notion Style</option>
+                    <option value="academic">Academic Paper</option>
+                </select>
+                <button id="editThemeBtn"
+                    class="px-2 py-1 text-xs font-medium text-gray-600 hover:text-blue-600 hover:bg-white rounded transition-colors"
+                    title="Edit current theme CSS">
+                    Edit CSS
+                </button>
+            </div>
+
+            <button id="printBtn"
+                class="px-3 py-1.5 bg-gray-900 text-white text-sm rounded hover:bg-black transition-colors flex items-center gap-2 shadow-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
+                    </path>
+                </svg>
+                Print
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex overflow-hidden">
+        <!-- Editor View -->
+        <div
+            class="w-1/2 flex flex-col border-r border-gray-200 bg-gray-50 print:hidden">
+            <div
+                class="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-100">
+                Markdown Input</div>
+            <textarea id="editor"
+                class="flex-1 w-full p-6 bg-gray-50 resize-none focus:outline-none font-mono text-sm leading-relaxed text-gray-800"
+                placeholder="# Start typing your markdown here..."
+                spellcheck="false"></textarea>
+        </div>
+
+        <!-- Preview View -->
+        <div class="w-1/2 flex flex-col bg-white overflow-hidden print:w-full">
+            <div
+                class="px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-100 print:hidden">
+                Preview</div>
+            <div id="preview"
+                class="markdown-body flex-1 w-full p-8 overflow-y-auto max-w-none print:p-0 print:overflow-visible">
+                <!-- Content will be rendered here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- CSS Editor Modal -->
+    <div id="cssEditorModal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white w-3/4 h-3/4 flex flex-col rounded-lg shadow-xl">
+            <div
+                class="flex items-center justify-between px-4 py-3 border-b border-gray-200">
+                <h3 class="font-semibold text-gray-800">Edit Theme CSS</h3>
+                <div class="space-x-2">
+                    <button id="resetCssBtn"
+                        class="text-xs text-red-600 hover:text-red-800 px-3 py-1 font-medium">Reset
+                        to Default</button>
+                    <button id="closeCssModal"
+                        class="text-gray-500 hover:text-gray-700">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="flex-1 p-0 relative">
+                <textarea id="cssEditor"
+                    class="w-full h-full p-4 font-mono text-sm resize-none focus:outline-none bg-gray-50"
+                    spellcheck="false"></textarea>
+            </div>
+            <div
+                class="px-4 py-3 border-t border-gray-200 flex justify-end space-x-3 bg-gray-50 rounded-b-lg">
+                <button id="cancelCssBtn"
+                    class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800">Cancel</button>
+                <button id="saveCssBtn"
+                    class="px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700">Save
+                    Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../lib/marked.min.js"></script>
+    <script src="../lib/purify.min.js"></script>
+    <script src="../lib/prism.min.js"></script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>

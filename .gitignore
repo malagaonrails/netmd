@@ -1,0 +1,8 @@
+node_modules/
+.DS_Store
+Thumbs.db
+.gemini/
+.vscode/
+.idea/
+*.log
+netmd-v*.zip
