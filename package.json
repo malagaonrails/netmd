@@ -1,6 +1,6 @@
 {
   "name": "netmd",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Local Markdown to PDF Chrome Extension",
   "scripts": {
     "vendor": "node scripts/vendor.js"
