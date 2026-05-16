@@ -1,7 +1,10 @@
-/* Fixed dimensions for the Chrome extension popup */
-html, body {
+/* Fixed dimensions ONLY for the Chrome extension popup */
+html.is-extension, html.is-extension body {
     width: 800px;
     height: 600px;
+}
+
+html, body {
     margin: 0;
     padding: 0;
 }

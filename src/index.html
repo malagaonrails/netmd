@@ -12,6 +12,12 @@
     <link rel="stylesheet" href="../lib/tailwind.min.css">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="../lib/prism.css">
+    <script>
+        // Detect if running as a Chrome extension popup to apply specific sizing
+        if (window.location.protocol === 'chrome-extension:') {
+            document.documentElement.classList.add('is-extension');
+        }
+    </script>
     <style>
         /* Custom scrollbar for Notion-like feel */
         ::-webkit-scrollbar {
