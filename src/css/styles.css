@@ -1,3 +1,11 @@
+/* Fixed dimensions for the Chrome extension popup */
+html, body {
+    width: 800px;
+    height: 600px;
+    margin: 0;
+    padding: 0;
+}
+
 /* Custom print styles and overrides */
 @media print {
     @page {
