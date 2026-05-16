@@ -45,9 +45,58 @@ function updatePreview() {
         }
 
         preview.innerHTML = cleanHtml;
+        updateTitle(rawMarkdown);
     } catch (e) {
         console.error("Render Error:", e);
     }
+}
+
+/**
+ * Updates the document title based on markdown content
+ * @param {string} markdown 
+ */
+function updateTitle(markdown) {
+    const defaultTitle = "NetMD - Local Markdown to PDF / Print converter";
+    if (!markdown || !markdown.trim()) {
+        document.title = defaultTitle;
+        return;
+    }
+
+    // Get first line with content
+    const firstLine = markdown.split('\n').find(l => l.trim().length > 0) || "";
+
+    let clean = "";
+    try {
+        if (typeof marked !== 'undefined') {
+            // 1. Parse markdown line to HTML
+            const html = marked.parse(firstLine);
+            
+            if (typeof DOMPurify !== 'undefined') {
+                // 2. Use DOMPurify to securely extract text content via DOM fragment
+                const fragment = DOMPurify.sanitize(html, { RETURN_DOM_FRAGMENT: true });
+                clean = fragment.textContent || "";
+            } else {
+                // Fallback: simple tag stripping if DOMPurify is missing
+                clean = html.replace(/<[^>]*>/g, "");
+            }
+        }
+    } catch (e) {
+        console.error("Title Extraction Error:", e);
+    }
+
+    // Clean up whitespace/newlines and fallback to raw line if result is empty
+    clean = (clean || firstLine.replace(/^[#\s*>-]+/g, '')).trim();
+
+    if (!clean) {
+        document.title = defaultTitle;
+        return;
+    }
+
+    if (clean.length > 50) {
+        clean = clean.substring(0, 47) + "...";
+    }
+
+    document.title = `NetMD - ${clean}`;
 }
 
 // ... (Theme Manager functions loadTheme, openCssEditor, etc are unchanged, skipping rewrite for brevity unless requested) ... 
