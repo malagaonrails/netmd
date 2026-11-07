@@ -1,10 +1,8 @@
-/* Fixed dimensions ONLY for the Chrome extension popup */
-html.is-extension, html.is-extension body {
-    width: 800px;
-    height: 600px;
-}
-
-html, body {
+/* Popup sizing: min-width/height force the Chrome extension popup open at a usable size.
+   In a regular browser tab these have no visible effect (the tab is already wider). */
+body {
+    min-width: 800px;
+    min-height: 600px;
     margin: 0;
     padding: 0;
 }

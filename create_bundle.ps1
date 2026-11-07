@@ -33,6 +33,14 @@ foreach ($item in $includes) {
     }
 }
 
+# Remove store assets from staging: promo/screenshot images are uploaded
+# manually to the Chrome Web Store Developer Dashboard, not shipped with the extension.
+$storeAssets = Join-Path $staging "assets\store"
+if (Test-Path $storeAssets) {
+    Remove-Item -Recurse -Force $storeAssets
+    Write-Host "Excluded assets/store/ from bundle (store listing images)." -ForegroundColor DarkGray
+}
+
 # Zip the staging directory
 Compress-Archive -Path "$staging\*" -DestinationPath $zipFile
 
