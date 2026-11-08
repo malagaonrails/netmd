@@ -1,24 +1,111 @@
-/* 
- * NETMD - NOTION STYLE THEME
- * A clean, sans-serif look inspired by modern wiki tools.
+﻿/*
+ * NETMD - NOTION V2 THEME
+ * Modular, block-based aesthetic faithful to Notion's actual rendering.
+ * Features: Inter font, generous spacing, tinted callouts, toggles,
+ *           subtle borders and clean database-style tables.
  * Scoped to .markdown-body to prevent conflicts.
  */
 
+/* =========================================
+   DESIGN TOKENS
+   ========================================= */
 .markdown-body {
-    /* =========================================
-       1. GLOBAL VARIABLES & TYPOGRAPHY
-       ========================================= */
-    font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
-    font-size: 16px;
-    line-height: 1.5;
-    color: #37352f;
-    /* Notion Black */
-    background-color: transparent;
+    /* Surfaces */
+    --notion-bg:          #ffffff;
+    --notion-bg-hover:    rgba(55, 53, 47, 0.04);
+    --notion-bg-selected: rgba(45, 170, 219, 0.1);
+    --notion-sidebar:     #fbfbfa;
+
+    /* Text */
+    --notion-text:        #37352f;
+    --notion-text-muted:  #9b9a97;
+    --notion-text-subtle: #b5b4b1;
+
+    /* Borders */
+    --notion-border:      rgba(55, 53, 47, 0.16);
+    --notion-border-soft: rgba(55, 53, 47, 0.09);
+
+    /* Accents */
+    --notion-accent:      #2eaadc;
+
+    /* Code */
+    --notion-code-bg:     #f1f1ef;
+    --notion-code-text:   #eb5757;
+    --notion-inline-bg:   rgba(135, 131, 120, 0.15);
+    --notion-inline-text: #eb5757;
+
+    /* Callout tints */
+    --notion-gray-bg:     rgba(241, 241, 239, 0.8);
+    --notion-blue-bg:     rgba(231, 243, 248, 0.8);
+    --notion-green-bg:    rgba(237, 243, 236, 0.8);
+    --notion-yellow-bg:   rgba(251, 243, 219, 0.8);
+    --notion-orange-bg:   rgba(250, 235, 221, 0.8);
+    --notion-red-bg:      rgba(253, 235, 236, 0.8);
+    --notion-purple-bg:   rgba(244, 240, 247, 0.8);
+    --notion-pink-bg:     rgba(249, 238, 243, 0.8);
+    --notion-brown-bg:    rgba(244, 238, 238, 0.8);
+}
+
+@media (prefers-color-scheme: dark) {
+    .markdown-body {
+        --notion-bg:          #191919;
+        --notion-bg-hover:    rgba(255, 255, 255, 0.055);
+        --notion-bg-selected: rgba(45, 170, 219, 0.15);
+        --notion-sidebar:     #111111;
+
+        --notion-text:        rgba(255, 255, 255, 0.81);
+        --notion-text-muted:  rgba(255, 255, 255, 0.45);
+        --notion-text-subtle: rgba(255, 255, 255, 0.28);
+
+        --notion-border:      rgba(255, 255, 255, 0.13);
+        --notion-border-soft: rgba(255, 255, 255, 0.07);
+
+        --notion-code-bg:     rgba(135, 131, 120, 0.15);
+        --notion-code-text:   #eb5757;
+        --notion-inline-bg:   rgba(135, 131, 120, 0.15);
+        --notion-inline-text: #f07878;
+
+        --notion-gray-bg:     rgba(100, 100, 100, 0.2);
+        --notion-blue-bg:     rgba(32, 94, 128, 0.25);
+        --notion-green-bg:    rgba(37, 90, 50, 0.25);
+        --notion-yellow-bg:   rgba(120, 90, 10, 0.25);
+        --notion-orange-bg:   rgba(130, 65, 10, 0.25);
+        --notion-red-bg:      rgba(130, 30, 30, 0.25);
+        --notion-purple-bg:   rgba(80, 50, 110, 0.25);
+        --notion-pink-bg:     rgba(120, 40, 80, 0.25);
+        --notion-brown-bg:    rgba(90, 50, 40, 0.25);
+    }
 }
 
 /* =========================================
-      2. HEADERS
-      ========================================= */
+   BASE — page feel
+   ========================================= */
+.markdown-body {
+    font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                 "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--notion-text);
+    background-color: var(--notion-bg);
+    caret-color: var(--notion-text);
+    max-width: 100%;
+}
+
+.markdown-body > *:first-child { margin-top: 0 !important; }
+.markdown-body > *:last-child  { margin-bottom: 0 !important; }
+
+/* =========================================
+   PARAGRAPH — block spacing
+   ========================================= */
+.markdown-body p {
+    margin-top: 2px;
+    margin-bottom: 2px;
+    min-height: 1.65em;
+}
+
+/* =========================================
+   HEADERS — Notion uses weight, not big size changes
+   ========================================= */
 .markdown-body h1,
 .markdown-body h2,
 .markdown-body h3,
@@ -27,155 +114,386 @@
 .markdown-body h6 {
     font-weight: 600;
     line-height: 1.3;
-    margin-top: 1.4em;
-    margin-bottom: 0.2em;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.015em;
+    margin-top: 2em;
+    margin-bottom: 2px;
+    color: var(--notion-text);
 }
 
 .markdown-body h1 {
-    font-size: 1.875rem;
+    font-size: 1.875em;
+    font-weight: 700;
 }
 
 .markdown-body h2 {
-    font-size: 1.5rem;
-    border-bottom: 1px solid #e5e7eb;
-    padding-bottom: 0.3em;
+    font-size: 1.375em;
+    font-weight: 600;
+    padding-top: 1px;
+    border-bottom: none; /* Notion has no h2 underline */
 }
 
 .markdown-body h3 {
-    font-size: 1.25rem;
-}
-
-/* =========================================
-      3. LISTS
-      ========================================= */
-.markdown-body ul,
-.markdown-body ol {
-    padding-left: 1.5em;
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-    list-style: inherit;
-    /* Restore browser bullets */
-}
-
-.markdown-body li {
-    /* Fix missing bullets from Tailwind Preflight */
-    list-style-type: inherit;
-    margin-bottom: 0.2em;
-}
-
-/* Restoring bullets specifically if Tailwind stripped them aggressively */
-.markdown-body ul {
-    list-style-type: disc !important;
-}
-
-.markdown-body ul ul {
-    list-style-type: circle !important;
-}
-
-.markdown-body ol {
-    list-style-type: decimal !important;
-}
-
-/* Task Lists */
-.markdown-body input[type="checkbox"] {
-    margin-right: 0.5em;
-}
-
-/* =========================================
-      4. CODE BLOCKS
-      ========================================= */
-.markdown-body pre {
-    background: #f7f6f3;
-    border-radius: 3px;
-    padding: 1.5em;
-    overflow-x: auto;
-    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
-    font-size: 0.9em;
-    color: #eb5757;
-    /* Notion Code Red */
-    border: none;
-}
-
-.markdown-body code {
-    font-family: inherit;
-    background: rgba(135, 131, 120, 0.15);
-    color: #eb5757;
-    padding: 0.2em 0.4em;
-    border-radius: 3px;
-    font-size: 0.85em;
-}
-
-.markdown-body pre code {
-    background: transparent;
-    padding: 0;
-    color: inherit;
-}
-
-/* =========================================
-      5. QUOTES & CALLOUTS
-      ========================================= */
-.markdown-body blockquote {
-    border-left: 3px solid #37352f;
-    padding-left: 1em;
-    margin-left: 0;
-    margin-top: 1em;
-    margin-bottom: 1em;
-    font-style: italic;
-    color: #585652;
-}
-
-/* =========================================
-      6. TABLES
-      ========================================= */
-.markdown-body table {
-    border-collapse: collapse;
-    width: 100%;
-    margin-top: 1em;
-    margin-bottom: 1em;
-    font-size: 0.95em;
-}
-
-.markdown-body th,
-.markdown-body td {
-    border: 1px solid #e9e9e7;
-    padding: 0.5em 0.75em;
-    text-align: left;
-}
-
-.markdown-body th {
-    background-color: #f7f6f3;
+    font-size: 1.125em;
     font-weight: 600;
 }
 
-/* =========================================
-      7. EXTRAS
-      ========================================= */
-.markdown-body hr {
-    border: none;
-    border-top: 1px solid #e9e9e7;
-    margin: 1.5em 0;
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+    font-size: 1em;
+    color: var(--notion-text-muted);
 }
 
+/* =========================================
+   LINKS
+   ========================================= */
 .markdown-body a {
     color: inherit;
     text-decoration: underline;
-    text-decoration-color: rgba(55, 53, 47, 0.4);
+    text-decoration-color: var(--notion-border);
+    text-underline-offset: 2px;
+    transition: text-decoration-color 0.15s;
 }
 
-.markdown-body img {
-    max-width: 100%;
-    border-radius: 2px;
+.markdown-body a:hover {
+    text-decoration-color: var(--notion-text-muted);
 }
 
-/* HTML Elements */
-.markdown-body details {
-    background: #f7f6f3;
-    padding: 0.5em;
+/* =========================================
+   INLINE CODE
+   ========================================= */
+.markdown-body code {
+    font-family: "SFMono-Regular", ui-monospace, Menlo, "Courier New", monospace;
+    font-size: 0.875em;
+    padding: 0.15em 0.4em;
     border-radius: 4px;
+    background-color: var(--notion-inline-bg);
+    color: var(--notion-inline-text);
+}
+
+/* =========================================
+   CODE BLOCKS
+   ========================================= */
+.markdown-body pre {
+    position: relative;
+    margin: 8px 0 12px 0;
+    padding: 0;
+    border-radius: 4px;
+    background-color: var(--notion-code-bg);
+    border: 1px solid var(--notion-border-soft);
+    overflow: hidden;
+}
+
+/* Language label — top-right pill */
+.markdown-body pre::before {
+    content: attr(data-lang);
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    font-family: ui-sans-serif, sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--notion-text-muted);
+    background: transparent;
+    pointer-events: none;
+}
+
+.markdown-body pre:not([data-lang])::before,
+.markdown-body pre[data-lang=""]::before {
+    display: none;
+}
+
+.markdown-body pre code {
+    display: block;
+    padding: 32px 16px 16px;
+    background: transparent;
+    border: none;
+    font-size: 0.875em;
+    line-height: 1.6;
+    color: var(--notion-text);
+    overflow-x: auto;
+    white-space: pre;
+}
+
+/* =========================================
+   BLOCKQUOTES
+   ========================================= */
+.markdown-body blockquote {
+    margin: 8px 0;
+    padding: 4px 16px;
+    border-left: 3px solid var(--notion-text);
+    color: var(--notion-text-muted);
+    font-style: italic;
+    background: transparent;
+}
+
+/* =========================================
+   NOTION CALLOUTS  (.notion-callout-*)
+   Applied to blockquotes with a data-callout attribute, or via classes.
+   ========================================= */
+.markdown-body .notion-callout {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 16px;
+    border-radius: 4px;
+    margin: 8px 0;
+    border: 1px solid var(--notion-border-soft);
+    font-style: normal;
+    color: var(--notion-text);
+    background-color: var(--notion-gray-bg);
+}
+
+.markdown-body .notion-callout-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+    line-height: 1.4;
+    font-style: normal;
+}
+
+.markdown-body .notion-callout-body { flex: 1; min-width: 0; }
+
+/* Colour variants */
+.markdown-body .notion-callout.blue   { background-color: var(--notion-blue-bg); }
+.markdown-body .notion-callout.green  { background-color: var(--notion-green-bg); }
+.markdown-body .notion-callout.yellow { background-color: var(--notion-yellow-bg); }
+.markdown-body .notion-callout.orange { background-color: var(--notion-orange-bg); }
+.markdown-body .notion-callout.red    { background-color: var(--notion-red-bg); }
+.markdown-body .notion-callout.purple { background-color: var(--notion-purple-bg); }
+.markdown-body .notion-callout.pink   { background-color: var(--notion-pink-bg); }
+.markdown-body .notion-callout.brown  { background-color: var(--notion-brown-bg); }
+
+/* =========================================
+   NOTION TOGGLE — <details><summary>
+   ========================================= */
+.markdown-body details {
+    margin: 2px 0;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
 }
 
 .markdown-body summary {
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 500;
+    padding: 4px 8px;
+    border-radius: 4px;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--notion-text);
+    transition: background 0.1s;
+}
+
+.markdown-body summary::-webkit-details-marker { display: none; }
+
+.markdown-body summary::before {
+    content: "▶";
+    font-size: 10px;
+    color: var(--notion-text-muted);
+    transition: transform 0.15s;
+    display: inline-block;
+}
+
+.markdown-body details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+.markdown-body summary:hover {
+    background-color: var(--notion-bg-hover);
+}
+
+.markdown-body details > *:not(summary) {
+    padding-left: 24px;
+}
+
+/* =========================================
+   LISTS
+   ========================================= */
+.markdown-body ul,
+.markdown-body ol {
+    margin: 2px 0 2px 0;
+    padding-left: 1.5em;
+}
+
+.markdown-body ul { list-style-type: disc !important; }
+.markdown-body ul ul { list-style-type: circle !important; }
+.markdown-body ol { list-style-type: decimal !important; }
+
+.markdown-body li {
+    margin-bottom: 2px;
+    padding-left: 2px;
+}
+
+/* Task list checkboxes */
+.markdown-body .task-list-item { list-style-type: none; }
+.markdown-body .task-list-item input[type="checkbox"] {
+    margin: 0 6px 0 -1.4em;
+    accent-color: var(--notion-accent);
+    width: 14px;
+    height: 14px;
+}
+
+/* Checked task — dim the text */
+.markdown-body .task-list-item input:checked ~ * {
+    opacity: 0.5;
+    text-decoration: line-through;
+}
+
+/* =========================================
+   TABLES — database-style
+   ========================================= */
+.markdown-body table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 12px 0;
+    font-size: 0.95em;
+    border: 1px solid var(--notion-border-soft);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.markdown-body th,
+.markdown-body td {
+    padding: 8px 12px;
+    border: 1px solid var(--notion-border-soft);
+    text-align: left;
+}
+
+.markdown-body th {
+    font-weight: 500;
+    font-size: 0.85em;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--notion-text-muted);
+    background-color: var(--notion-bg-hover);
+}
+
+.markdown-body tr:hover {
+    background-color: var(--notion-bg-hover);
+}
+
+/* =========================================
+   HORIZONTAL RULE
+   ========================================= */
+.markdown-body hr {
+    border: none;
+    border-top: 1px solid var(--notion-border-soft);
+    margin: 24px 0;
+}
+
+/* =========================================
+   IMAGES
+   ========================================= */
+.markdown-body img {
+    max-width: 100%;
+    border-radius: 4px;
+    display: block;
+    margin: 8px 0;
+}
+
+/* =========================================
+   KBD
+   ========================================= */
+.markdown-body kbd {
+    display: inline-block;
+    padding: 2px 6px;
+    font-family: "SFMono-Regular", ui-monospace, Menlo, monospace;
+    font-size: 0.8em;
+    color: var(--notion-text);
+    background-color: var(--notion-bg-hover);
+    border: 1px solid var(--notion-border);
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+}
+
+/* =========================================
+   STRONG / EM / STRIKETHROUGH
+   ========================================= */
+.markdown-body strong { font-weight: 600; }
+.markdown-body em { font-style: italic; }
+.markdown-body del { color: var(--notion-text-muted); }
+
+
+/* =========================================
+   DOC BREADCRUMB (Hidden outside docs themes)
+   ========================================= */
+.markdown-body .doc-breadcrumb {
+    display: none;
+}
+
+/* =========================================
+   WIKI LINKS (Notion style: page mention)
+   ========================================= */
+.markdown-body .obs-wikilink {
+    color: var(--notion-text);
+    text-decoration: underline;
+    text-decoration-color: var(--notion-border);
+    background: var(--notion-bg-hover);
+    padding: 1px 6px;
+    border-radius: 3px;
+    text-underline-offset: 2px;
+}
+.markdown-body .obs-wikilink:hover {
+    background: var(--notion-bg-selected);
+}
+
+/* =========================================
+   TAG PILLS (Notion style: multi-select badge)
+   ========================================= */
+.markdown-body .obs-tag {
+    display: inline-block;
+    padding: 1px 7px;
+    margin: 0 2px;
+    border-radius: 3px;
+    background-color: var(--notion-gray-bg);
+    color: var(--notion-text);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.5;
+    border: 1px solid var(--notion-border-soft);
+}
+
+/* =========================================
+   FRONTMATTER METADATA (Notion page properties)
+   ========================================= */
+.markdown-body .obs-frontmatter {
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--notion-border-soft);
+    font-size: 14px;
+}
+.markdown-body .obs-frontmatter-header {
+    font-weight: 500;
+    color: var(--notion-text-muted);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.markdown-body .obs-frontmatter table {
+    width: 100%;
+    border: none;
+    margin: 0;
+    display: table;
+}
+.markdown-body .obs-frontmatter th,
+.markdown-body .obs-frontmatter td {
+    border: none;
+    padding: 4px 10px 4px 0;
+    background: transparent;
+    font-size: 14px;
+}
+.markdown-body .obs-frontmatter th {
+    width: 120px;
+    color: var(--notion-text-muted);
+    font-weight: 500;
+    text-align: left;
 }

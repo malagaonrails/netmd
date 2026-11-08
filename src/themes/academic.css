@@ -1,24 +1,126 @@
 /* 
- * NETMD - ACADEMIC THEME
- * A formal, serif-based look inspired by LaTeX and academic journals.
+ * NETMD - ACADEMIC PAPER THEME
+ * Inspired by LaTeX documents, Computer Modern typography, and academic journals (ACM, IEEE, Springer).
+ * Features:
+ *  - Formal serif typography with justified body text.
+ *  - LaTeX-style Theorem/Remark environments for Alerts & Callouts.
+ *  - Booktabs-compliant tables (heavy top/bottom rules, no vertical borders).
+ *  - Algorithm/Listing style code blocks with formal language headers.
+ *  - Formal article metadata / abstract block for Frontmatter.
+ *  - Proof / Supplementary material styling for toggles (<details><summary>).
+ * Scoped to .markdown-body to prevent conflicts.
  */
 
+/* =========================================
+   1. GLOBAL VARIABLES & TYPOGRAPHY
+   ========================================= */
 .markdown-body {
-    /* =========================================
-       1. GLOBAL VARIABLES & TYPOGRAPHY
-       ========================================= */
-    font-family: "Times New Roman", Times, Georgia, serif;
-    font-size: 12pt;
-    /* Standard academic size */
+    --acad-bg:             #ffffff;
+    --acad-fg:             #111111;
+    --acad-fg-muted:       #444444;
+    --acad-fg-subtle:      #666666;
+    --acad-border:         #111111;
+    --acad-border-muted:   #888888;
+    --acad-border-light:   #cccccc;
+
+    --acad-code-bg:        #fbfbfb;
+    --acad-inline-code-bg: #f4f4f4;
+
+    /* Callout environments (Theorem, Remark, Proposition, Warning) */
+    --acad-note-border:    #2b5b84;
+    --acad-note-bg:        #f4f8fb;
+    --acad-tip-border:     #2e6b38;
+    --acad-tip-bg:         #f4f9f5;
+    --acad-important-border: #5a327a;
+    --acad-important-bg:   #f9f5fb;
+    --acad-warning-border: #8c5310;
+    --acad-warning-bg:     #fdfaf3;
+    --acad-caution-border: #8b1e1e;
+    --acad-caution-bg:     #fdf4f4;
+
+    font-family: "Latin Modern Roman", "Computer Modern", "TeX Gyre Termes", "Times New Roman", Times, Cambria, Georgia, serif;
+    font-size: 11pt;
     line-height: 1.6;
-    color: #000000;
+    color: var(--acad-fg);
+    background-color: var(--acad-bg);
     max-width: 100%;
     text-align: justify;
-    /* Justify text for paper look */
+    text-justify: inter-word;
+    hyphens: auto;
+    word-wrap: break-word;
+}
+
+.markdown-body > *:first-child { margin-top: 0 !important; }
+.markdown-body > *:last-child  { margin-bottom: 0 !important; }
+
+/* Hide breadcrumb outside documentation themes */
+.markdown-body .doc-breadcrumb {
+    display: none;
 }
 
 /* =========================================
-   2. HEADERS
+   2. ARTICLE METADATA / FRONTMATTER
+   ========================================= */
+.markdown-body .obs-frontmatter {
+    margin: 1.5em auto 2.5em auto;
+    width: 92%;
+    border-top: 1.5pt solid var(--acad-border);
+    border-bottom: 1.5pt solid var(--acad-border);
+    padding: 12px 16px;
+    background-color: #fafafa;
+    font-family: inherit;
+}
+
+.markdown-body .obs-frontmatter-header {
+    font-size: 10pt;
+    font-weight: bold;
+    font-variant: small-caps;
+    letter-spacing: 0.1em;
+    text-align: center;
+    color: var(--acad-fg);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-bottom: 0.5pt solid var(--acad-border-muted);
+    padding-bottom: 4px;
+}
+
+.markdown-body .obs-frontmatter-icon {
+    font-size: 11pt;
+}
+
+.markdown-body .obs-frontmatter table {
+    width: 100%;
+    border: none;
+    margin: 0;
+    display: table;
+}
+
+.markdown-body .obs-frontmatter th,
+.markdown-body .obs-frontmatter td {
+    border: none;
+    padding: 3px 8px;
+    font-size: 9.5pt;
+    text-align: left;
+    background: transparent;
+}
+
+.markdown-body .obs-frontmatter th {
+    width: 120px;
+    font-weight: bold;
+    font-variant: small-caps;
+    color: var(--acad-fg-muted);
+    letter-spacing: 0.05em;
+}
+
+.markdown-body .obs-frontmatter td {
+    color: var(--acad-fg);
+}
+
+/* =========================================
+   3. HEADERS
    ========================================= */
 .markdown-body h1,
 .markdown-body h2,
@@ -26,102 +128,520 @@
 .markdown-body h4,
 .markdown-body h5,
 .markdown-body h6 {
-    font-family: "Cambria", "Times New Roman", serif;
+    font-family: "Cambria", "Times New Roman", Times, serif;
     font-weight: bold;
-    color: #000000;
-    margin-top: 2em;
-    margin-bottom: 1em;
+    color: var(--acad-fg);
+    margin-top: 1.8em;
+    margin-bottom: 0.6em;
     text-align: left;
-    /* Keep headers left-aligned */
+    line-height: 1.25;
 }
 
+/* Title */
 .markdown-body h1 {
-    font-size: 24pt;
+    font-size: 20pt;
     text-align: center;
-    /* Title usually centered */
-    border-bottom: 2px solid black;
-    padding-bottom: 0.5em;
+    padding-bottom: 0.3em;
+    margin-top: 0.5em;
+    margin-bottom: 1em;
+    letter-spacing: -0.01em;
+    border-bottom: none;
 }
 
+/* Section */
 .markdown-body h2 {
-    font-size: 18pt;
-    border-bottom: 1px solid #666;
+    font-size: 14pt;
+    font-variant: small-caps;
+    letter-spacing: 0.06em;
+    border-bottom: 0.75pt solid var(--acad-border-muted);
+    padding-bottom: 0.2em;
+    margin-top: 1.6em;
 }
 
+/* Subsection */
 .markdown-body h3 {
-    font-size: 14pt;
+    font-size: 12pt;
     font-style: italic;
+    font-weight: bold;
+}
+
+.markdown-body h4 {
+    font-size: 11pt;
+    font-weight: bold;
+    font-style: normal;
+}
+
+.markdown-body h5 {
+    font-size: 10.5pt;
+    font-style: italic;
+    font-weight: normal;
+    color: var(--acad-fg-muted);
+}
+
+.markdown-body h6 {
+    font-size: 10pt;
+    font-variant: small-caps;
+    color: var(--acad-fg-subtle);
 }
 
 /* =========================================
-   3. LISTS
+   4. PARAGRAPHS & CITATIONS
+   ========================================= */
+.markdown-body p {
+    margin-top: 0;
+    margin-bottom: 0.8em;
+    text-indent: 1.5em; /* Traditional academic paragraph indentation */
+}
+
+/* First paragraph after header or element without indent */
+.markdown-body h1 + p,
+.markdown-body h2 + p,
+.markdown-body h3 + p,
+.markdown-body h4 + p,
+.markdown-body .obs-frontmatter + p,
+.markdown-body blockquote + p,
+.markdown-body table + p,
+.markdown-body pre + p {
+    text-indent: 0;
+}
+
+.markdown-body strong {
+    font-weight: bold;
+}
+
+.markdown-body em {
+    font-style: italic;
+}
+
+.markdown-body u {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.markdown-body del {
+    color: var(--acad-fg-subtle);
+}
+
+/* Links & Cross-References */
+.markdown-body a {
+    color: #0b3c68;
+    text-decoration: none;
+    border-bottom: 0.5pt solid rgba(11, 60, 104, 0.4);
+}
+
+.markdown-body a:hover {
+    color: #000000;
+    border-bottom-color: #000000;
+}
+
+/* Wiki links as formal cross-references [§ Section] */
+.markdown-body .obs-wikilink {
+    color: #1a4a75;
+    font-family: inherit;
+    text-decoration: none;
+    border-bottom: 0.75pt dotted #1a4a75;
+    padding: 0 1px;
+}
+
+.markdown-body .obs-wikilink::before {
+    content: "§ ";
+    font-size: 0.85em;
+    color: var(--acad-fg-muted);
+}
+
+.markdown-body .obs-wikilink:hover {
+    border-bottom-style: solid;
+}
+
+/* Tag badges as academic keywords */
+.markdown-body .obs-tag {
+    display: inline-block;
+    padding: 0 5px;
+    margin: 0 2px;
+    font-family: inherit;
+    font-size: 9pt;
+    font-style: italic;
+    color: var(--acad-fg-muted);
+    background-color: #f2f2f2;
+    border: 0.5pt solid var(--acad-border-light);
+    border-radius: 2px;
+    text-decoration: none;
+    vertical-align: baseline;
+}
+
+/* =========================================
+   5. ALERTS & CALLOUTS (LaTeX Theorem / Remark style)
+   ========================================= */
+.markdown-body .markdown-alert,
+.markdown-body .gh-alert,
+.markdown-body .notion-callout,
+.markdown-body .obs-callout,
+.markdown-body .doc-admonition {
+    display: block;
+    margin: 1.4em 0;
+    padding: 10px 16px;
+    border: 1pt solid var(--acad-border-muted);
+    border-left: 3.5pt solid var(--acad-border);
+    background-color: #fafafa;
+    border-radius: 2px;
+    text-align: left;
+    font-size: 10.5pt;
+}
+
+.markdown-body .gh-alert-icon,
+.markdown-body .notion-callout-icon,
+.markdown-body .obs-callout-icon,
+.markdown-body .doc-admonition-icon {
+    display: inline;
+    margin-right: 6px;
+    font-size: 11pt;
+    vertical-align: baseline;
+}
+
+.markdown-body .gh-alert-body,
+.markdown-body .notion-callout-body,
+.markdown-body .obs-callout-body,
+.markdown-body .doc-admonition-body {
+    display: inline;
+}
+
+.markdown-body .gh-alert-title,
+.markdown-body .obs-callout-title,
+.markdown-body .doc-admonition-title {
+    display: inline-block;
+    font-family: "Cambria", "Times New Roman", serif;
+    font-weight: bold;
+    font-variant: small-caps;
+    letter-spacing: 0.05em;
+    margin-right: 6px;
+    margin-bottom: 4px;
+    color: var(--acad-fg);
+}
+
+.markdown-body .gh-alert-title::after,
+.markdown-body .obs-callout-title::after,
+.markdown-body .doc-admonition-title::after {
+    content: ".";
+}
+
+.markdown-body .gh-alert-content,
+.markdown-body .notion-callout-content,
+.markdown-body .obs-callout-content,
+.markdown-body .doc-admonition-content {
+    display: block;
+    margin-top: 4px;
+    font-style: italic;
+    color: var(--acad-fg);
+}
+
+/* Alert Type Colors (Formal Academic Tints) */
+.markdown-body .gh-alert-note,
+.markdown-body .obs-callout.info,
+.markdown-body .doc-admonition.note {
+    border-left-color: var(--acad-note-border);
+    background-color: var(--acad-note-bg);
+}
+.markdown-body .gh-alert-note .gh-alert-title { color: var(--acad-note-border); }
+
+.markdown-body .gh-alert-tip,
+.markdown-body .obs-callout.tip,
+.markdown-body .doc-admonition.tip {
+    border-left-color: var(--acad-tip-border);
+    background-color: var(--acad-tip-bg);
+}
+.markdown-body .gh-alert-tip .gh-alert-title { color: var(--acad-tip-border); }
+
+.markdown-body .gh-alert-important,
+.markdown-body .obs-callout.tip,
+.markdown-body .doc-admonition.info {
+    border-left-color: var(--acad-important-border);
+    background-color: var(--acad-important-bg);
+}
+.markdown-body .gh-alert-important .gh-alert-title { color: var(--acad-important-border); }
+
+.markdown-body .gh-alert-warning,
+.markdown-body .obs-callout.warning,
+.markdown-body .doc-admonition.caution {
+    border-left-color: var(--acad-warning-border);
+    background-color: var(--acad-warning-bg);
+}
+.markdown-body .gh-alert-warning .gh-alert-title { color: var(--acad-warning-border); }
+
+.markdown-body .gh-alert-caution,
+.markdown-body .obs-callout.danger,
+.markdown-body .doc-admonition.danger {
+    border-left-color: var(--acad-caution-border);
+    background-color: var(--acad-caution-bg);
+}
+.markdown-body .gh-alert-caution .gh-alert-title { color: var(--acad-caution-border); }
+
+/* =========================================
+   6. CODE BLOCKS (LaTeX Algorithm / Listings style)
+   ========================================= */
+.markdown-body pre {
+    position: relative;
+    background-color: var(--acad-code-bg);
+    border-top: 1.5pt solid var(--acad-border);
+    border-bottom: 1.5pt solid var(--acad-border);
+    border-left: none;
+    border-right: none;
+    padding: 0;
+    margin: 1.5em 0;
+    font-family: "Courier New", Courier, "Liberation Mono", monospace;
+    font-size: 9.5pt;
+    line-height: 1.45;
+    text-align: left;
+    white-space: pre;
+    overflow-x: auto;
+}
+
+/* Formal Listings Caption Header */
+.markdown-body pre::before {
+    content: "Listing: " attr(data-lang);
+    display: block;
+    padding: 5px 12px;
+    font-family: "Cambria", "Times New Roman", serif;
+    font-size: 8.5pt;
+    font-weight: bold;
+    font-variant: small-caps;
+    letter-spacing: 0.08em;
+    color: var(--acad-fg-muted);
+    border-bottom: 0.5pt solid var(--acad-border-muted);
+    background-color: #f2f2f2;
+}
+
+.markdown-body pre:not([data-lang])::before,
+.markdown-body pre[data-lang=""]::before {
+    display: none;
+}
+
+.markdown-body pre code {
+    display: block;
+    padding: 10px 14px;
+    background: transparent;
+    border: none;
+    color: var(--acad-fg);
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    text-indent: 0;
+}
+
+.markdown-body code {
+    font-family: "Courier New", Courier, "Liberation Mono", monospace;
+    font-size: 9pt;
+    background-color: var(--acad-inline-code-bg);
+    border: 0.5pt solid var(--acad-border-light);
+    border-radius: 2px;
+    padding: 1px 4px;
+}
+
+/* =========================================
+   7. TABLES (LaTeX Booktabs Standard)
+   Rule 1: Never, ever use vertical rules.
+   Rule 2: Never use double rules, only heavy \toprule, \bottomrule, and thin \midrule.
+   ========================================= */
+.markdown-body table {
+    margin: 1.8em auto;
+    border-collapse: collapse;
+    width: 95%;
+    border-top: 2pt solid var(--acad-border);
+    border-bottom: 2pt solid var(--acad-border);
+    border-left: none !important;
+    border-right: none !important;
+    font-size: 10pt;
+    text-align: center;
+}
+
+.markdown-body th {
+    font-weight: bold;
+    font-variant: small-caps;
+    letter-spacing: 0.05em;
+    text-align: center;
+    border-top: none;
+    border-bottom: 1pt solid var(--acad-border);
+    border-left: none !important;
+    border-right: none !important;
+    padding: 8px 12px;
+    background: transparent;
+    color: var(--acad-fg);
+}
+
+.markdown-body td {
+    padding: 6px 12px;
+    text-align: center;
+    border-top: none;
+    border-bottom: 0.5pt solid var(--acad-border-light);
+    border-left: none !important;
+    border-right: none !important;
+    background: transparent;
+}
+
+.markdown-body tr:last-child td {
+    border-bottom: none;
+}
+
+.markdown-body tr:nth-child(2n) {
+    background: transparent; /* No zebra striping in formal papers */
+}
+
+/* =========================================
+   8. BLOCKQUOTES (Extended Formal Quotations)
+   ========================================= */
+.markdown-body blockquote {
+    font-style: italic;
+    margin: 1.5em 2.5em;
+    padding: 0 0 0 1.2em;
+    border-left: 2.5pt solid var(--acad-border-muted);
+    color: var(--acad-fg-muted);
+    text-indent: 0;
+    font-size: 10.5pt;
+    text-align: justify;
+}
+
+.markdown-body blockquote > :first-child { margin-top: 0; }
+.markdown-body blockquote > :last-child  { margin-bottom: 0; }
+
+/* =========================================
+   9. INTERACTIVE TOGGLES (<details><summary>)
+   Styled as Formal Proof / Supplementary Notes
+   ========================================= */
+.markdown-body details {
+    margin: 1.4em 0;
+    border: 0.75pt solid var(--acad-border-muted);
+    border-radius: 2px;
+    background-color: #fafafa;
+    padding: 0;
+}
+
+.markdown-body summary {
+    cursor: pointer;
+    font-family: "Cambria", "Times New Roman", serif;
+    font-weight: bold;
+    font-variant: small-caps;
+    letter-spacing: 0.04em;
+    padding: 8px 14px;
+    background-color: #f0f0f0;
+    border-bottom: 0.75pt solid transparent;
+    color: var(--acad-fg);
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    user-select: none;
+}
+
+.markdown-body summary::-webkit-details-marker { display: none; }
+
+.markdown-body summary::before {
+    content: "▶";
+    font-size: 8pt;
+    color: var(--acad-fg-muted);
+    transition: transform 0.15s ease;
+    display: inline-block;
+}
+
+.markdown-body details[open] > summary {
+    border-bottom-color: var(--acad-border-muted);
+}
+
+.markdown-body details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+.markdown-body details > *:not(summary) {
+    padding: 10px 16px;
+    text-indent: 0;
+    font-size: 10.5pt;
+}
+
+/* =========================================
+   10. LISTS & TASK LISTS
    ========================================= */
 .markdown-body ul,
 .markdown-body ol {
-    margin-left: 2em;
+    margin: 0.8em 0 1em 2em;
     padding-left: 1em;
-    list-style-type: inherit;
+    text-indent: 0;
 }
 
-/* Ensure standard bullets */
 .markdown-body ul {
     list-style-type: disc !important;
+}
+
+.markdown-body ul ul {
+    list-style-type: circle !important;
 }
 
 .markdown-body ol {
     list-style-type: decimal !important;
 }
 
-/* =========================================
-   4. CODE BLOCKS
-   ========================================= */
-.markdown-body pre {
-    background: #f0f0f0;
-    border: 1px solid #ccc;
-    padding: 10px;
-    font-family: "Courier New", Courier, monospace;
-    font-size: 10pt;
-    white-space: pre-wrap;
-    text-align: left;
+.markdown-body ol ol {
+    list-style-type: lower-alpha;
 }
 
-.markdown-body code {
-    font-family: "Courier New", Courier, monospace;
-    background: #f0f0f0;
-    padding: 2px 4px;
+.markdown-body li {
+    margin-bottom: 0.3em;
+}
+
+.markdown-body .task-list-item {
+    list-style-type: none;
+    text-indent: 0;
+}
+
+.markdown-body .task-list-item input[type="checkbox"] {
+    margin: 0 0.4em 0.2em -1.4em;
+    vertical-align: middle;
 }
 
 /* =========================================
-   5. TABLES
+   11. KBD, HR, IMAGES & PRINT
    ========================================= */
-.markdown-body table {
+.markdown-body kbd {
+    display: inline-block;
+    padding: 1px 5px;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 8.5pt;
+    color: var(--acad-fg);
+    background-color: #f7f7f7;
+    border: 1pt solid var(--acad-border-muted);
+    border-radius: 2px;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+}
+
+.markdown-body hr {
+    border: none;
+    border-top: 1pt solid var(--acad-border);
+    margin: 2.5em auto;
+    width: 60%;
+}
+
+.markdown-body img {
+    max-width: 90%;
     margin: 1.5em auto;
-    /* Center table */
-    border-collapse: collapse;
-    width: 90%;
-    border-top: 2px solid black;
-    border-bottom: 2px solid black;
+    display: block;
+    border: 0.5pt solid var(--acad-border-light);
 }
 
-.markdown-body th {
-    font-weight: bold;
-    text-align: center;
-    border-bottom: 1px solid black;
-    padding: 6px;
-    font-variant: small-caps;
-}
+/* Print Enhancements */
+@media print {
+    .markdown-body {
+        font-size: 10pt;
+        color: #000000 !important;
+        background: transparent !important;
+    }
 
-.markdown-body td {
-    padding: 6px;
-    text-align: center;
-}
+    .markdown-body a {
+        color: #000000 !important;
+        text-decoration: underline !important;
+        border-bottom: none !important;
+    }
 
-/* =========================================
-   6. QUOTES
-   ========================================= */
-.markdown-body blockquote {
-    font-style: italic;
-    margin: 1.5em 2em;
-    padding-left: 1em;
-    border-left: 4px solid #ccc;
+    .markdown-body .obs-frontmatter,
+    .markdown-body .markdown-alert,
+    .markdown-body pre,
+    .markdown-body table {
+        break-inside: avoid;
+    }
 }

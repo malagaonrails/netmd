@@ -1,0 +1,509 @@
+﻿/*
+ * NETMD - GITHUB V2 THEME
+ * Accurate reproduction of GitHub's Markdown rendering style.
+ * Features: neutral sans-serif, subtle code headers, GFM alert callouts.
+ * Scoped to .markdown-body to prevent conflicts.
+ */
+
+/* =========================================
+   LIGHT MODE (Default)
+   ========================================= */
+.markdown-body {
+    --gh-bg:            #ffffff;
+    --gh-bg-subtle:     #f6f8fa;
+    --gh-bg-muted:      #eaeef2;
+    --gh-fg:            #1f2328;
+    --gh-fg-muted:      #656d76;
+    --gh-fg-subtle:     #818b98;
+    --gh-border:        #d0d7de;
+    --gh-border-muted:  hsla(210, 18%, 87%, 1);
+    --gh-accent:        #0969da;
+    --gh-link:          #0969da;
+    --gh-code-bg:       #f6f8fa;
+    --gh-inline-bg:     rgba(175, 184, 193, 0.2);
+    --gh-inline-color:  #1f2328;
+
+    /* Alert colours */
+    --gh-note-border:   #0969da;
+    --gh-note-bg:       #ddf4ff;
+    --gh-note-fg:       #0969da;
+    --gh-tip-border:    #1a7f37;
+    --gh-tip-bg:        #dafbe1;
+    --gh-tip-fg:        #1a7f37;
+    --gh-important-border: #8250df;
+    --gh-important-bg:  #fbefff;
+    --gh-important-fg:  #8250df;
+    --gh-warning-border: #9a6700;
+    --gh-warning-bg:    #fff8c5;
+    --gh-warning-fg:    #9a6700;
+    --gh-caution-border: #cf222e;
+    --gh-caution-bg:    #ffebe9;
+    --gh-caution-fg:    #cf222e;
+}
+
+@media (prefers-color-scheme: dark) {
+    .markdown-body {
+        --gh-bg:            #0d1117;
+        --gh-bg-subtle:     #161b22;
+        --gh-bg-muted:      #21262d;
+        --gh-fg:            #e6edf3;
+        --gh-fg-muted:      #8b949e;
+        --gh-fg-subtle:     #6e7681;
+        --gh-border:        #30363d;
+        --gh-border-muted:  #21262d;
+        --gh-accent:        #58a6ff;
+        --gh-link:          #58a6ff;
+        --gh-code-bg:       #161b22;
+        --gh-inline-bg:     rgba(110, 118, 129, 0.4);
+        --gh-inline-color:  #e6edf3;
+
+        --gh-note-border:   #1f6feb;
+        --gh-note-bg:       #0c2d6b;
+        --gh-note-fg:       #58a6ff;
+        --gh-tip-border:    #196c2e;
+        --gh-tip-bg:        #0d2a1b;
+        --gh-tip-fg:        #3fb950;
+        --gh-important-border: #6e40c9;
+        --gh-important-bg:  #1f0e3a;
+        --gh-important-fg:  #bc8cff;
+        --gh-warning-border: #9e6a03;
+        --gh-warning-bg:    #2d1f00;
+        --gh-warning-fg:    #d29922;
+        --gh-caution-border: #da3633;
+        --gh-caution-bg:    #3d0c0c;
+        --gh-caution-fg:    #f85149;
+    }
+}
+
+/* =========================================
+   BASE
+   ========================================= */
+.markdown-body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans",
+                 Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--gh-fg);
+    background-color: var(--gh-bg);
+    word-wrap: break-word;
+}
+
+.markdown-body > *:first-child { margin-top: 0 !important; }
+.markdown-body > *:last-child  { margin-bottom: 0 !important; }
+
+/* =========================================
+   TYPOGRAPHY
+   ========================================= */
+.markdown-body p {
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+    margin-top: 24px;
+    margin-bottom: 16px;
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--gh-fg);
+}
+
+.markdown-body h1 {
+    font-size: 2em;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid var(--gh-border-muted);
+}
+
+.markdown-body h2 {
+    font-size: 1.5em;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid var(--gh-border-muted);
+}
+
+.markdown-body h3 { font-size: 1.25em; }
+.markdown-body h4 { font-size: 1em; }
+.markdown-body h5 { font-size: 0.875em; }
+
+.markdown-body h6 {
+    font-size: 0.85em;
+    color: var(--gh-fg-muted);
+}
+
+/* =========================================
+   LINKS
+   ========================================= */
+.markdown-body a {
+    color: var(--gh-link);
+    text-decoration: none;
+}
+
+.markdown-body a:hover {
+    text-decoration: underline;
+}
+
+/* =========================================
+   INLINE CODE
+   ========================================= */
+.markdown-body code {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+                 "Liberation Mono", monospace;
+    font-size: 85%;
+    padding: 0.2em 0.4em;
+    margin: 0;
+    white-space: break-spaces;
+    background-color: var(--gh-inline-bg);
+    border-radius: 6px;
+    color: var(--gh-inline-color);
+}
+
+/* =========================================
+   CODE BLOCKS — with language "tab"
+   ========================================= */
+.markdown-body pre {
+    position: relative;
+    margin-top: 0;
+    margin-bottom: 16px;
+    padding: 0;
+    overflow: hidden;
+    border-radius: 6px;
+    border: 1px solid var(--gh-border);
+    background-color: var(--gh-code-bg);
+}
+
+/* Language label bar */
+.markdown-body pre::before {
+    content: attr(data-lang);
+    display: block;
+    padding: 6px 16px;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+                 "Liberation Mono", monospace;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--gh-fg-muted);
+    background-color: var(--gh-bg-subtle);
+    border-bottom: 1px solid var(--gh-border);
+}
+
+.markdown-body pre code {
+    display: block;
+    padding: 16px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    font-size: 85%;
+    line-height: 1.45;
+    overflow-x: auto;
+    color: var(--gh-fg);
+    white-space: pre;
+}
+
+/* When Prism wraps in a <code class="language-*"> we apply the bar via JS-added data-lang.
+   Fallback: if no language was detected, suppress the bar */
+.markdown-body pre:not([data-lang])::before,
+.markdown-body pre[data-lang=""]::before {
+    display: none;
+}
+
+/* =========================================
+   BLOCKQUOTES — plain GFM style
+   ========================================= */
+.markdown-body blockquote {
+    margin: 0 0 16px 0;
+    padding: 0 1em;
+    color: var(--gh-fg-muted);
+    border-left: 0.25em solid var(--gh-border);
+}
+
+.markdown-body blockquote > :first-child { margin-top: 0; }
+.markdown-body blockquote > :last-child  { margin-bottom: 0; }
+
+/* =========================================
+   GFM ALERT CALLOUTS
+   > [!NOTE], [!TIP], [!IMPORTANT], [!WARNING], [!CAUTION]
+   GitHub renders these by detecting the first paragraph inside a blockquote.
+   We simulate them with CSS attribute selectors on the blockquote's data-* or
+   by targeting paragraphs that begin with the alert keyword using :has().
+   Since marked.js renders them as plain blockquotes, we use a JS-free pure CSS
+   approach: target the strong/em text that starts with the keyword.
+
+   NOTE: This works best when the [!TYPE] text is wrapped in a <p> inside <blockquote>.
+   We use the .gh-alert-* classes that you can optionally add via a marked extension,
+   or rely on the universal blockquote style above as fallback.
+   ========================================= */
+
+/* Universal alert wrapper - applied via data attribute from JS pre-processing */
+.markdown-body .gh-alert {
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    border-radius: 6px;
+    border: 1px solid;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    border-left-width: 4px;
+}
+
+.markdown-body .gh-alert-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    font-style: normal;
+}
+
+.markdown-body .gh-alert-body { flex: 1; min-width: 0; }
+
+.markdown-body .gh-alert-title {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.markdown-body .gh-alert-note {
+    background-color: var(--gh-note-bg);
+    border-color: var(--gh-note-border);
+    color: var(--gh-fg);
+}
+.markdown-body .gh-alert-note .gh-alert-title { color: var(--gh-note-fg); }
+
+.markdown-body .gh-alert-tip {
+    background-color: var(--gh-tip-bg);
+    border-color: var(--gh-tip-border);
+    color: var(--gh-fg);
+}
+.markdown-body .gh-alert-tip .gh-alert-title { color: var(--gh-tip-fg); }
+
+.markdown-body .gh-alert-important {
+    background-color: var(--gh-important-bg);
+    border-color: var(--gh-important-border);
+    color: var(--gh-fg);
+}
+.markdown-body .gh-alert-important .gh-alert-title { color: var(--gh-important-fg); }
+
+.markdown-body .gh-alert-warning {
+    background-color: var(--gh-warning-bg);
+    border-color: var(--gh-warning-border);
+    color: var(--gh-fg);
+}
+.markdown-body .gh-alert-warning .gh-alert-title { color: var(--gh-warning-fg); }
+
+.markdown-body .gh-alert-caution {
+    background-color: var(--gh-caution-bg);
+    border-color: var(--gh-caution-border);
+    color: var(--gh-fg);
+}
+.markdown-body .gh-alert-caution .gh-alert-title { color: var(--gh-caution-fg); }
+
+/* =========================================
+   LISTS
+   ========================================= */
+.markdown-body ul,
+.markdown-body ol {
+    margin-top: 0;
+    margin-bottom: 16px;
+    padding-left: 2em;
+}
+
+.markdown-body ul { list-style-type: disc !important; }
+.markdown-body ul ul { list-style-type: circle !important; }
+.markdown-body ul ul ul { list-style-type: square !important; }
+.markdown-body ol { list-style-type: decimal !important; }
+.markdown-body ol ol { list-style-type: lower-roman; }
+
+.markdown-body li { margin-top: 0; margin-bottom: 0; }
+.markdown-body li + li { margin-top: 0.25em; }
+.markdown-body li > p { margin-top: 16px; }
+
+/* Task list */
+.markdown-body .task-list-item { list-style-type: none; }
+.markdown-body .task-list-item input[type="checkbox"] {
+    margin: 0 0.4em 0.1em -1.6em;
+    vertical-align: middle;
+    accent-color: var(--gh-accent);
+}
+
+/* =========================================
+   TABLES
+   ========================================= */
+.markdown-body table {
+    border-collapse: collapse;
+    display: block;
+    width: max-content;
+    max-width: 100%;
+    overflow: auto;
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+.markdown-body th,
+.markdown-body td {
+    padding: 6px 13px;
+    border: 1px solid var(--gh-border);
+}
+
+.markdown-body th {
+    font-weight: 600;
+    background-color: var(--gh-bg-subtle);
+}
+
+.markdown-body tr { background-color: var(--gh-bg); }
+.markdown-body tr:nth-child(2n) { background-color: var(--gh-bg-subtle); }
+
+/* =========================================
+   HORIZONTAL RULE
+   ========================================= */
+.markdown-body hr {
+    height: 0.25em;
+    padding: 0;
+    margin: 24px 0;
+    background-color: var(--gh-border);
+    border: 0;
+}
+
+/* =========================================
+   IMAGES
+   ========================================= */
+.markdown-body img {
+    max-width: 100%;
+    border-style: none;
+    border-radius: 6px;
+}
+
+/* =========================================
+   KBD
+   ========================================= */
+.markdown-body kbd {
+    display: inline-block;
+    padding: 3px 5px;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+                 "Liberation Mono", monospace;
+    font-size: 11px;
+    line-height: 10px;
+    color: var(--gh-fg);
+    vertical-align: middle;
+    background-color: var(--gh-bg-subtle);
+    border: solid 1px var(--gh-border);
+    border-radius: 6px;
+    box-shadow: inset 0 -1px 0 var(--gh-border);
+}
+
+/* =========================================
+   DETAILS / SUMMARY
+   ========================================= */
+.markdown-body details {
+    margin-bottom: 16px;
+    padding: 8px 12px;
+    background-color: var(--gh-bg-subtle);
+    border: 1px solid var(--gh-border);
+    border-radius: 6px;
+}
+
+.markdown-body summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--gh-link);
+}
+
+.markdown-body summary:hover { text-decoration: underline; }
+
+/* =========================================
+   STRONG / EM
+   ========================================= */
+.markdown-body strong { font-weight: 600; }
+.markdown-body em { font-style: italic; }
+
+/* =========================================
+   STRIKETHROUGH
+   ========================================= */
+.markdown-body del { color: var(--gh-fg-muted); }
+
+
+/* =========================================
+   DOC BREADCRUMB (Hidden outside docs themes)
+   ========================================= */
+.markdown-body .doc-breadcrumb {
+    display: none;
+}
+
+/* =========================================
+   WIKI LINKS (GitHub style: clean reference)
+   ========================================= */
+.markdown-body .obs-wikilink {
+    color: var(--gh-link);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--gh-accent);
+}
+.markdown-body .obs-wikilink:hover {
+    text-decoration: underline;
+}
+
+/* =========================================
+   TAG PILLS (GitHub style: topic badge)
+   ========================================= */
+.markdown-body .obs-tag {
+    display: inline-block;
+    padding: 0.15em 0.5em;
+    margin: 0 2px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--gh-accent);
+    background-color: var(--gh-bg-subtle);
+    border: 1px solid var(--gh-border);
+    border-radius: 2em;
+    text-decoration: none;
+    vertical-align: baseline;
+}
+.markdown-body .obs-tag:hover {
+    background-color: var(--gh-bg-muted);
+}
+
+/* =========================================
+   FRONTMATTER METADATA (GitHub properties)
+   ========================================= */
+.markdown-body .obs-frontmatter {
+    margin-bottom: 24px;
+    padding: 12px 16px;
+    background-color: var(--gh-bg-subtle);
+    border: 1px solid var(--gh-border);
+    border-radius: 6px;
+    font-size: 13px;
+}
+.markdown-body .obs-frontmatter-header {
+    font-weight: 600;
+    color: var(--gh-fg-muted);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+}
+.markdown-body .obs-frontmatter table {
+    width: 100%;
+    border: none;
+    margin: 0;
+    display: table;
+}
+.markdown-body .obs-frontmatter th,
+.markdown-body .obs-frontmatter td {
+    border: none;
+    padding: 3px 8px 3px 0;
+    background: transparent;
+    font-size: 13px;
+}
+.markdown-body .obs-frontmatter th {
+    width: 110px;
+    color: var(--gh-fg-muted);
+    font-weight: 500;
+    text-align: left;
+}

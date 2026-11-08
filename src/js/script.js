@@ -23,6 +23,227 @@ if (typeof marked !== 'undefined') {
     });
 }
 
+function escapeHtml(str) {
+    if (!str) return '';
+    return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+/**
+ * Extracts and formats YAML frontmatter at document start
+ */
+function processFrontmatter(markdown) {
+    const trimmed = markdown.trimStart();
+    if (!trimmed.startsWith('---')) {
+        return { frontmatterHtml: '', bodyMarkdown: markdown, meta: {} };
+    }
+
+    const match = trimmed.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/);
+    if (!match) {
+        return { frontmatterHtml: '', bodyMarkdown: markdown, meta: {} };
+    }
+
+    const rawYaml = match[1];
+    const offset = markdown.indexOf(match[0]) + match[0].length;
+    const bodyMarkdown = markdown.slice(offset);
+
+    const meta = {};
+    const rows = [];
+    const lines = rawYaml.split(/\r?\n/);
+    for (let line of lines) {
+        const colonIdx = line.indexOf(':');
+        if (colonIdx > -1) {
+            const key = line.slice(0, colonIdx).trim();
+            let val = line.slice(colonIdx + 1).trim();
+            if (key) {
+                meta[key] = val;
+                let displayVal = '';
+                if (val.startsWith('[') && val.endsWith(']')) {
+                    const items = val.slice(1, -1).split(',').map(s => s.trim().replace(/^['"]|['"]$/g, ''));
+                    displayVal = items.map(it => `<span class="obs-tag">${escapeHtml(it.startsWith('#') ? it : '#' + it)}</span>`).join(' ');
+                } else {
+                    displayVal = escapeHtml(val.replace(/^['"]|['"]$/g, ''));
+                }
+                rows.push(`<tr><th>${escapeHtml(key)}</th><td>${displayVal}</td></tr>`);
+            }
+        }
+    }
+
+    if (rows.length === 0) {
+        return { frontmatterHtml: '', bodyMarkdown: markdown, meta };
+    }
+
+    const frontmatterHtml = `
+<div class="obs-frontmatter metadata-properties">
+  <div class="obs-frontmatter-header">
+    <span class="obs-frontmatter-icon">📋</span>
+    <span class="obs-frontmatter-title">Properties</span>
+  </div>
+  <table>
+    <tbody>
+      ${rows.join('\n')}
+    </tbody>
+  </table>
+</div>`;
+
+    return { frontmatterHtml, bodyMarkdown, meta };
+}
+
+/**
+ * Creates documentation breadcrumbs (used in GitBook / Docusaurus)
+ */
+function createBreadcrumb(meta, bodyMarkdown) {
+    let title = meta.title || '';
+    if (!title) {
+        const h1Match = bodyMarkdown.match(/^#\s+(.+)$/m);
+        if (h1Match) {
+            title = h1Match[1].replace(/[*_~`]/g, '').trim();
+        }
+    }
+    if (!title) return '';
+
+    return `
+<div class="doc-breadcrumb">
+  <a href="#">Docs</a>
+  <span class="sep">/</span>
+  <a href="#">Reference</a>
+  <span class="sep">/</span>
+  <span>${escapeHtml(title)}</span>
+</div>`;
+}
+
+/**
+ * Adds data-lang attribute to <pre> so themes can display language headers
+ */
+function enhanceCodeBlocks(container) {
+    container.querySelectorAll('pre code').forEach(codeEl => {
+        let lang = '';
+        codeEl.classList.forEach(cls => {
+            if (cls.startsWith('language-')) {
+                lang = cls.replace('language-', '').trim();
+            }
+        });
+        if (lang && codeEl.parentElement && codeEl.parentElement.tagName === 'PRE') {
+            codeEl.parentElement.setAttribute('data-lang', lang);
+        }
+    });
+}
+
+/**
+ * Transforms GitHub / Obsidian / GitBook alert callouts (> [!NOTE], etc.)
+ */
+function enhanceAlerts(container) {
+    const alertTypes = {
+        NOTE:      { type: 'note',      icon: 'ℹ️',  title: 'Note',      colorClass: 'blue',   obsClass: 'info',    docClass: 'note' },
+        TIP:       { type: 'tip',       icon: '💡',  title: 'Tip',       colorClass: 'green',  obsClass: 'tip',     docClass: 'tip' },
+        IMPORTANT: { type: 'important', icon: '📌',  title: 'Important', colorClass: 'purple', obsClass: 'tip',     docClass: 'info' },
+        WARNING:   { type: 'warning',   icon: '⚠️',  title: 'Warning',   colorClass: 'yellow', obsClass: 'warning', docClass: 'caution' },
+        CAUTION:   { type: 'caution',   icon: '🛑',  title: 'Caution',   colorClass: 'red',    obsClass: 'danger',  docClass: 'danger' },
+        INFO:      { type: 'note',      icon: 'ℹ️',  title: 'Info',      colorClass: 'blue',   obsClass: 'info',    docClass: 'info' },
+        DANGER:    { type: 'caution',   icon: '🚨',  title: 'Danger',    colorClass: 'red',    obsClass: 'danger',  docClass: 'danger' },
+        SUCCESS:   { type: 'tip',       icon: '✅',  title: 'Success',   colorClass: 'green',  obsClass: 'success', docClass: 'tip' }
+    };
+
+    container.querySelectorAll('blockquote').forEach(bq => {
+        const firstP = bq.querySelector('p') || bq;
+        const html = firstP.innerHTML;
+        const match = html.match(/^\s*\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION|INFO|DANGER|SUCCESS)\](?:\s*<br\s*\/?>|\s+)?/i);
+        if (match) {
+            const rawType = match[1].toUpperCase();
+            const config = alertTypes[rawType] || alertTypes.NOTE;
+
+            // Remove the [!TYPE] marker
+            firstP.innerHTML = html.slice(match[0].length);
+
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `markdown-alert gh-alert gh-alert-${config.type} notion-callout ${config.colorClass} obs-callout ${config.obsClass} doc-admonition ${config.docClass}`;
+            alertDiv.setAttribute('data-callout', config.type);
+
+            alertDiv.innerHTML = `
+                <div class="gh-alert-icon notion-callout-icon obs-callout-icon doc-admonition-icon">${config.icon}</div>
+                <div class="gh-alert-body notion-callout-body obs-callout-body doc-admonition-body">
+                    <div class="gh-alert-title obs-callout-title doc-admonition-title">${config.title}</div>
+                    <div class="gh-alert-content notion-callout-content obs-callout-content doc-admonition-content">
+                        ${bq.innerHTML}
+                    </div>
+                </div>
+            `;
+            bq.replaceWith(alertDiv);
+        }
+    });
+}
+
+/**
+ * Transforms Obsidian-style wiki-links [[Target]] and tags #tag
+ */
+function enhanceWikiLinksAndTags(container) {
+    const walker = document.createTreeWalker(
+        container,
+        NodeFilter.SHOW_TEXT,
+        {
+            acceptNode(node) {
+                const parent = node.parentElement;
+                if (!parent) return NodeFilter.FILTER_REJECT;
+                const tag = parent.tagName.toLowerCase();
+                if (['pre', 'code', 'a', 'kbd', 'script', 'style', 'textarea'].includes(tag)) {
+                    return NodeFilter.FILTER_REJECT;
+                }
+                if (parent.closest('pre, code, a, .obs-frontmatter')) {
+                    return NodeFilter.FILTER_REJECT;
+                }
+                return NodeFilter.FILTER_ACCEPT;
+            }
+        }
+    );
+
+    const textNodes = [];
+    while (walker.nextNode()) {
+        textNodes.push(walker.currentNode);
+    }
+
+    textNodes.forEach(node => {
+        const text = node.nodeValue;
+        if (!text || (!text.includes('[[') && !text.includes('#'))) return;
+
+        const wikiRegex = /\[\[([^\]\r\n|]+)(?:\|([^\]\r\n]+))?\]\]/g;
+        const tagRegex = /(^|\s)#([a-zA-Z0-9_\-\/]+)(?=[\s).,;!?]|$)/g;
+
+        const hasWiki = wikiRegex.test(text);
+        wikiRegex.lastIndex = 0;
+        const hasTag = tagRegex.test(text);
+        tagRegex.lastIndex = 0;
+
+        if (!hasWiki && !hasTag) return;
+
+        let processed = escapeHtml(text);
+
+        if (hasWiki) {
+            processed = processed.replace(/\[\[([^\]\r\n|]+)(?:\|([^\]\r\n]+))?\]\]/g, (m, target, label) => {
+                const cleanTarget = target.trim();
+                const cleanLabel = (label || cleanTarget).trim();
+                return `<a class="obs-wikilink internal-link" href="#${encodeURIComponent(cleanTarget)}" title="${escapeHtml(cleanTarget)}">${escapeHtml(cleanLabel)}</a>`;
+            });
+        }
+
+        const isHeading = node.parentElement && /^h[1-6]$/i.test(node.parentElement.tagName);
+        if (hasTag && !isHeading) {
+            processed = processed.replace(/(^|\s)#([a-zA-Z0-9_\-\/]+)(?=[\s).,;!?]|$)/g, (m, prefix, tag) => {
+                return `${prefix}<span class="obs-tag">#${escapeHtml(tag)}</span>`;
+            });
+        }
+
+        if (processed !== escapeHtml(text)) {
+            const span = document.createElement('span');
+            span.innerHTML = processed;
+            node.replaceWith(...span.childNodes);
+        }
+    });
+}
+
 // Main render function
 function updatePreview() {
     if (!editor || !preview) return;
@@ -33,11 +254,21 @@ function updatePreview() {
 
     try {
         const rawMarkdown = editor.value;
-        const rawHtml = marked.parse(rawMarkdown);
 
-        let cleanHtml = rawHtml;
+        // 1. Process frontmatter
+        const { frontmatterHtml, bodyMarkdown, meta } = processFrontmatter(rawMarkdown);
+
+        // 2. Generate breadcrumb for docs theme
+        const breadcrumbHtml = createBreadcrumb(meta, bodyMarkdown);
+
+        // 3. Parse Markdown
+        const rawHtml = marked.parse(bodyMarkdown);
+        const fullHtml = breadcrumbHtml + frontmatterHtml + rawHtml;
+
+        // 4. Sanitize HTML
+        let cleanHtml = fullHtml;
         if (typeof DOMPurify !== 'undefined') {
-            cleanHtml = DOMPurify.sanitize(rawHtml, {
+            cleanHtml = DOMPurify.sanitize(fullHtml, {
                 USE_PROFILES: { html: true },
                 FORBID_TAGS: ['script', 'iframe', 'object', 'embed', 'form'],
                 FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover']
@@ -45,7 +276,14 @@ function updatePreview() {
         }
 
         preview.innerHTML = cleanHtml;
-        updateTitle(rawMarkdown);
+
+        // 5. Post-process DOM for advanced features
+        enhanceCodeBlocks(preview);
+        enhanceAlerts(preview);
+        enhanceWikiLinksAndTags(preview);
+
+        // 6. Update document title
+        updateTitle(meta.title || rawMarkdown);
     } catch (e) {
         console.error("Render Error:", e);
     }
@@ -327,8 +565,18 @@ async function resetCss() {
 }
 
 // Default Content
-const defaultText = `# NetMD - Markdown Reference
-*A comprehensive guide to all supported elements.*
+const defaultText = `
+---
+title: Markdown Kitchen Sink
+author: NetMD Team
+tags: [markdown, documentation, themes, preview]
+date: 2026-11-08
+status: published
+version: 1.0.2
+---
+
+# Markdown Kitchen Sink
+*A comprehensive guide to all supported elements across all themes.*
 
 ## Text Formatting
 **Bold Text** and *Italic Text* or ***Bold Italic***.
@@ -336,12 +584,33 @@ const defaultText = `# NetMD - Markdown Reference
 You can also use <u>Underline</u> via HTML tags.
 
 ## Headers
-# H1
-## H2
-### H3
-#### H4
-##### H5
-###### H6
+# H1 Header
+## H2 Header
+### H3 Header
+#### H4 Header
+##### H5 Header
+###### H6 Header
+
+## Alerts & Callouts (GitHub, Notion, Obsidian, GitBook)
+> [!NOTE]
+> Highlights useful information that users should take note of even when skimming.
+
+> [!TIP]
+> Helpful advice or best practices for doing things more effectively.
+
+> [!IMPORTANT]
+> Key information essential for users to achieve their goal.
+
+> [!WARNING]
+> Urgent info that requires immediate user attention to avoid problems.
+
+> [!CAUTION]
+> Advises about potential risks or negative consequences of an action.
+
+## Knowledge & Connections (Obsidian Style)
+Here are internal wiki-links: [[Architecture Overview]] and [[Configuration Guide|Custom Setup Options]].
+
+Categorized tag badges: #documentation #release/v1.0 #guide #productivity
 
 ## Lists
 ### Unordered
@@ -367,51 +636,67 @@ You can also use <u>Underline</u> via HTML tags.
 Inline \`code\` looks like this.
 
 \`\`\`javascript
-// JavaScript Block
-function sayHello() {
-  console.log("Hello, World!");
+// JavaScript Block with Language Header
+function sayHello(name) {
+  console.log(\`Hello, \${name}! Welcome to NetMD.\`);
 }
+
+sayHello("Developer");
 \`\`\`
 
 \`\`\`python
-# Python Block
-def add(a, b):
-    return a + b
+# Python Block with Language Header
+def calculate_metrics(values):
+    return {
+        "count": len(values),
+        "total": sum(values),
+        "mean": sum(values) / len(values) if values else 0
+    }
 \`\`\`
 
 ## Blockquotes
-> This is a blockquote.
+> This is a standard blockquote.
 >
-> > Nested blockquote.
+> > Nested blockquotes are also supported.
 
-## Tables
-| Left Align | Center Align | Right Align |
-| :--- | :---: | ---: |
-| Cell 1 | Cell 2 | Cell 3 |
-| Row 2 | Data | Data |
-
-## Links & Images
-[Click me](https://example.com)
-
-![Placeholder Image](icons/placeholder.png)
-
-## HTML Elements
+## Interactive Toggles (Notion Style)
 <details>
-<summary>Click to expand</summary>
-Hidden content revealed!
+<summary>Click to expand: What makes NetMD unique?</summary>
+NetMD operates 100% locally inside your browser, guaranteeing total privacy while rendering Markdown to PDF. No data ever leaves your computer.
 </details>
 
-<br>
+<details>
+<summary>Click to expand: Supported Theme Styles</summary>
+- **GitHub**: Clean, technical with language headers and native alerts.
+- **Notion**: Modular page with tinted callouts, fluid toggles and clean tables.
+- **Obsidian**: Connected knowledge with wiki-links, tag pills, and property tables.
+- **Typora**: Distraction-free WYSIWYG reading experience with editorial typography.
+- **GitBook / Docusaurus**: Technical manual layout with breadcrumbs and admonitions.
+</details>
 
-<kbd>Ctrl</kbd> + <kbd>C</kbd>
+## Tables
+| Feature | GitHub | Notion | Obsidian | Typora | GitBook |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| Code Language Headers | Yes | Yes | Yes | Yes | Yes |
+| Callouts / Alerts | GFM Alerts | Tinted Blocks | Box Callouts | Quote Box | Admonition Bars |
+| Wiki-links | Yes | Mention | Wiki Pill | Underline | Cross-ref |
+| Tag Badges | Topic Badge | Property Pill | Mauve Pill | Minimal | Doc Badge |
+
+## Links & Images
+[Visit Example](https://example.com)
+
+![Placeholder Image](../assets/icons/placeholder.png)
+
+## HTML Elements
+Keyboard shortcuts: <kbd>Ctrl</kbd> + <kbd>C</kbd> or <kbd>Cmd</kbd> + <kbd>P</kbd> to print.
 
 ## Emojis (Unicode)
-🚀 💻 📝 ✨ 🎉 🔒
+🚀 💻 📝 ✨ 🎉 🔒 📊 💡
 
 ## Horizontal Rule
 ---
+End of document.
 
-Now, let's see how your markdown looks like!
 `;
 
 // Event Listeners (wrapped in DOMContentLoaded)
